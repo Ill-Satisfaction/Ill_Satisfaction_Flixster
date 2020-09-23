@@ -1,5 +1,9 @@
 package com.example.flixster.models;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,11 +14,13 @@ import java.util.List;
 public class Movie {
 
     String posterPath;
+    String backdropPath;
     String title;
     String overview;
 
     public Movie (JSONObject jsonObject) throws JSONException {
         posterPath = jsonObject.getString("poster_path");
+        backdropPath = jsonObject.getString("backdrop_path");
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
     }
@@ -27,8 +33,12 @@ public class Movie {
         return movies;
     }
 
-    public String getPosterPath() {
+    public String getPosterPath(Context context) {
         // TODO update hard coding here
+        int orientation = context.getResources().getConfiguration().orientation;
+        if (orientation== Configuration.ORIENTATION_LANDSCAPE) {
+            return String.format("https://image.tmdb.org/t/p/w780/%s", backdropPath);
+        }
         return String.format("https://image.tmdb.org/t/p/w342/%s", posterPath);
     }
 
