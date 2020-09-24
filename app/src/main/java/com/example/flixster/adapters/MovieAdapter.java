@@ -21,6 +21,10 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
+    private static final int POPULAR = 9090;
+    private static final int NOT_POPULAR = 5050;
+    private static final double POPULARITY_THRESHHOLD = 7.3;
+
     Context context;
     List<Movie> movies;
 
@@ -35,6 +39,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d("MovieAdapter", "onCreateViewHolder");
         View movieView = LayoutInflater.from(context).inflate(R.layout.item_movie, parent, false);
+        if (viewType==POPULAR)
+            movieView = LayoutInflater.from(context).inflate(R.layout.item_popular_movie, parent, false);
+
         return new ViewHolder(movieView);
     }
 
@@ -46,6 +53,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         Movie movie = movies.get(position);
         // bind movie data into holder
         holder.bind(movie);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(movies.get(position).getRating()>POPULARITY_THRESHHOLD)
+            return POPULAR;
+        return NOT_POPULAR;
     }
 
     // returns total count of items in list
@@ -65,7 +79,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
-
         }
 
         public void bind(Movie movie) {
