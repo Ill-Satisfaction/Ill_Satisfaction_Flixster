@@ -22,6 +22,7 @@ public class Movie {
     String title;
     String overview;
     double voteAverage;
+    Integer id;
 
     public Movie () {}  // required for Parceler -- not for use
     public Movie (JSONObject jsonObject) throws JSONException {
@@ -30,6 +31,7 @@ public class Movie {
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
         voteAverage = jsonObject.getDouble("vote_average");
+        id = jsonObject.getInt("id");
     }
 
     public static List<Movie> fromJsonArray (JSONArray movieJsonArray) throws JSONException {
@@ -38,6 +40,10 @@ public class Movie {
             movies.add(new Movie(movieJsonArray.getJSONObject(i)));
         }
         return movies;
+    }
+
+    public String getBackdropPath(Context context) {
+        return String.format("https://image.tmdb.org/t/p/w780/%s", backdropPath);
     }
 
     public String getPosterPath(Context context) {
@@ -59,5 +65,9 @@ public class Movie {
 
     public double getVoteAverage() {
         return voteAverage;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }
