@@ -7,10 +7,12 @@ import android.content.res.Configuration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Parcel // class is parcelable
 public class Movie {
 
     private static final double POPULARITY_THRESHHOLD = 7.3;
@@ -19,14 +21,15 @@ public class Movie {
     String backdropPath;
     String title;
     String overview;
-    double rating;
+    double voteAverage;
 
+    public Movie () {}  // required for Parceler -- not for use
     public Movie (JSONObject jsonObject) throws JSONException {
         posterPath = jsonObject.getString("poster_path");
         backdropPath = jsonObject.getString("backdrop_path");
         title = jsonObject.getString("title");
         overview = jsonObject.getString("overview");
-        rating = jsonObject.getDouble("vote_average");
+        voteAverage = jsonObject.getDouble("vote_average");
     }
 
     public static List<Movie> fromJsonArray (JSONArray movieJsonArray) throws JSONException {
@@ -40,7 +43,7 @@ public class Movie {
     public String getPosterPath(Context context) {
         // TODO update hard coding here
         int orientation = context.getResources().getConfiguration().orientation;
-        if (orientation== Configuration.ORIENTATION_LANDSCAPE || rating>POPULARITY_THRESHHOLD) {
+        if (orientation== Configuration.ORIENTATION_LANDSCAPE || voteAverage>POPULARITY_THRESHHOLD) {
             return String.format("https://image.tmdb.org/t/p/w780/%s", backdropPath);
         }
         return String.format("https://image.tmdb.org/t/p/w342/%s", posterPath);
@@ -54,5 +57,7 @@ public class Movie {
         return overview;
     }
 
-    public double getRating() { return rating; }
+    public double getVoteAverage() {
+        return voteAverage;
+    }
 }

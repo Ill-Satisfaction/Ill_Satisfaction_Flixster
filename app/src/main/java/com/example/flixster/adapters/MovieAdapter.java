@@ -1,6 +1,7 @@
 package com.example.flixster.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.flixster.MovieDetailsActivity;
 import com.example.flixster.R;
 import com.example.flixster.models.Movie;
 
+import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -57,7 +60,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
     @Override
     public int getItemViewType(int position) {
-        if(movies.get(position).getRating()>POPULARITY_THRESHHOLD)
+        if(movies.get(position).getVoteAverage()>POPULARITY_THRESHHOLD)
             return POPULAR;
         return NOT_POPULAR;
     }
@@ -68,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
         return movies.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvTitle;
         TextView tvOverview;
@@ -76,6 +79,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
@@ -86,6 +90,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
             tvOverview.setText(movie.getOverview());
             Glide.with(context).load(movie.getPosterPath(context)).into(ivPoster);
         }
+
+        @Override
+        public void onClick(View view) {
+            // get position + ensure validity
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                // get movie at position
+                Movie movie = movies.get(position);
+                // create intent to display moviedetails activity
+                Intent intent = new Intent(context, MovieDetailsActivity.class);
+                // pass movie as an extra (serialized via Parcels.wrap())
+                intent.putExtra(Movie.class.getSimpleName(), Parcels.wrap(movie));
+                // show activity
+                context.startActivity(intent);
+            }
+        }
+
     }
 
 }
